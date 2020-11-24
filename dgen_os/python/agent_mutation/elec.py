@@ -223,7 +223,7 @@ def apply_financial_params(dataframe, financing_terms, itc_options, inflation_ra
 
     dataframe = dataframe.reset_index()
 
-    dataframe = dataframe.merge(financing_terms, how='left', on=['year', 'sector_abbr'])
+    dataframe = dataframe.merge(financing_terms, how='left', on=['year','bin_id', 'sector_abbr'])
 
     dataframe = dataframe.merge(itc_options[['itc_fraction_of_capex', 'year', 'tech', 'sector_abbr']], 
                                 how='left', on=['year', 'tech', 'sector_abbr'])
@@ -532,8 +532,10 @@ def apply_state_incentives(dataframe, state_incentives, year, start_year, state_
 
     # Filter where the states have not exceeded their cumulative installed capacity (by mw or pct generation) or total program budget
     #state_incentives_mg = state_incentives_mg.loc[pd.isnull(state_incentives_mg['incentive_cap_total_pct']) | (state_incentives_mg['cum_capacity_pct'] < state_incentives_mg['incentive_cap_total_pct'])]
-    state_incentives_mg = state_incentives_mg.loc[pd.isnull(state_incentives_mg['incentive_cap_total_mw']) | (state_incentives_mg['cum_system_mw'] < state_incentives_mg['incentive_cap_total_mw'])]
-    state_incentives_mg = state_incentives_mg.loc[pd.isnull(state_incentives_mg['budget_total_usd']) | (state_incentives_mg['cum_incentive_spending_usd'] < state_incentives_mg['budget_total_usd'])]
+    state_incentives_mg = state_incentives_mg.loc[pd.isnull(state_incentives_mg['incentive_cap_total_mw']) | 
+                                                  (state_incentives_mg['cum_system_mw'] < state_incentives_mg['incentive_cap_total_mw'])]
+    state_incentives_mg = state_incentives_mg.loc[pd.isnull(state_incentives_mg['budget_total_usd']) | 
+                                                  (state_incentives_mg['cum_incentive_spending_usd'] < state_incentives_mg['budget_total_usd'])]
 
     output  =[]
     for i in state_incentives_mg.groupby(['state_abbr', 'sector_abbr']):

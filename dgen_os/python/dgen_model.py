@@ -205,6 +205,9 @@ def main(mode = None, resume_year = None, endyear = None, ReEDS_inputs = None):
                     # Apply state incentives
                     solar_agents.on_frame(agent_mutation.elec.apply_state_incentives, [state_incentives, year, model_settings.start_year, state_capacity_by_year])
                     
+                    
+                    #cores = None #Use when debugging 
+                       
                     # Calculate System Financial Performance
                     solar_agents.chunk_on_row(financial_functions.calc_system_size_and_performance, sectors=scenario_settings.sectors, cores=cores, rate_switch_table=rate_switch_table)
 

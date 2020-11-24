@@ -143,8 +143,8 @@ def create_output_schema(pg_conn_string, role, suffix, scenario_list, source_sch
     suffix_microsecond = datetime.now().strftime('%f')
     logger.info('Creating output schema based on {source_schema}'.format(**inputs))
 
-    con, cur = utilfunc.make_con(pg_conn_string, role="postgres")
-    #con, cur = utilfunc.make_con(pg_conn_string, role="diffusion-schema-writers")
+    #con, cur = utilfunc.make_con(pg_conn_string, role="postgres")
+    con, cur = utilfunc.make_con(pg_conn_string, role="diffusion-writers")
 
     # check that the source schema exists
     sql = """SELECT count(*)
@@ -190,8 +190,8 @@ def drop_output_schema(pg_conn_string, schema, delete_output_schema):
     if delete_output_schema == True:
         logger.info('Dropping the Output Schema ({}) from Database'.format(schema))
 
-        con, cur = utilfunc.make_con(pg_conn_string, role="postgres")
-        #con, cur = utilfunc.make_con(pg_conn_string, role="diffusion-schema-writers")
+        #con, cur = utilfunc.make_con(pg_conn_string, role="postgres")
+        con, cur = utilfunc.make_con(pg_conn_string, role="diffusion-writers")
         sql = '''DROP SCHEMA IF EXISTS {schema} CASCADE;'''.format(**inputs)
         cur.execute(sql)
         con.commit()
@@ -282,13 +282,23 @@ def get_bass_params(con, schema):
 
 
 def get_state_incentives(con):
-
-    # changed from 2019 to 2020
-    sql = """SELECT * FROM diffusion_shared.state_incentives_2020;"""
-
+    #changed from 2019 to 2020
+    #state_incentives_csv = pd.read_csv("/Users/asekar/Box/SFS_2020/Data/state_incentives_2020_LI_full.csv", index_col=False)
+    #sql = """SELECT * FROM diffusion_shared.state_incentives_2020;"""    
+    #sql = 'SELECT * FROM public."state_incentives_2020_LI_3000"'
+    sql = 'SELECT * FROM public."state_incentives_2020_LI_full"'    
     state_incentives = pd.read_sql(sql, con)
-
+    
+    #from datetime import datetime   #code to conver the format if that erro persists  
+    #for x in state_incentives.index:
+    #    state_incentives.start_date.iloc[x]=datetime.date(datetime.strptime(state_incentives.start_date.iloc[x], '%Y-%m-%d'))
+    #    state_incentives.start_date.iloc[x]=datetime.date(datetime.strptime(state_incentives.start_date.iloc[x], '%Y-%m-%d'))
+    
     return state_incentives
+
+     
+
+    #
 
 
 def get_itc_incentives(con, schema):
