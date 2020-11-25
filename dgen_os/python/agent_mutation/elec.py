@@ -516,9 +516,16 @@ def apply_state_incentives(dataframe, state_incentives, year, start_year, state_
         state_incentives['end_date'][pd.isnull(state_incentives['end_date'])] = end_date
 
     #Adjust incenctives to account for reduced values as adoption increases
+
+    state_incentives1 = state_incentives.loc[state_incentives['bin_id'].isin([5,6,7,8,17,18,19,20])]
+    state_incentives2 = state_incentives.loc[state_incentives['bin_id'].isin([1,2,3,4,9,10,11,12,13,14,15,16])]
+    
+    
     yearly_escalation_function = lambda value, end_year: max(value - value * (1.0 / (end_year - start_year)) * (year-start_year), 0)
     for field in ['pbi_usd_p_kwh','cbi_usd_p_w','ibi_pct','cbi_usd_p_wh']:
-        state_incentives[field] = state_incentives.apply(lambda row: yearly_escalation_function(row[field], row['end_date'].year), axis=1)
+        state_incentives2[field] = state_incentives2.apply(lambda row: yearly_escalation_function(row[field], row['end_date'].year), axis=1)
+    
+    state_incentives=state_incentives1.append(state_incentives2)
         
     # Filter Incentives by the Years in which they are valid
     state_incentives = state_incentives.loc[
@@ -538,15 +545,15 @@ def apply_state_incentives(dataframe, state_incentives, year, start_year, state_
                                                   (state_incentives_mg['cum_incentive_spending_usd'] < state_incentives_mg['budget_total_usd'])]
 
     output  =[]
-    for i in state_incentives_mg.groupby(['state_abbr', 'sector_abbr']):
+    for i in state_incentives_mg.groupby(['state_abbr', 'sector_abbr','bin_id']):
         row = i[1]
-        state, sector = i[0]
-        output.append({'state_abbr':state, 'sector_abbr':sector,"state_incentives":row})
+        state, sector, bin_type = i[0]
+        output.append({'state_abbr':state, 'sector_abbr':sector,'bin_id':bin_type,"state_incentives":row})
 
-    state_inc_df = pd.DataFrame(columns=['state_abbr', 'sector_abbr', 'state_incentives'])
+    state_inc_df = pd.DataFrame(columns=['state_abbr', 'sector_abbr','bin_id', 'state_incentives'])
     state_inc_df = pd.concat([state_inc_df, pd.DataFrame.from_records(output)], sort=False)
     
-    dataframe = pd.merge(dataframe, state_inc_df, on=['state_abbr','sector_abbr'], how='left')
+    dataframe = pd.merge(dataframe, state_inc_df, on=['state_abbr','sector_abbr','bin_id'], how='left')
     
     dataframe = dataframe.set_index('agent_id')
 

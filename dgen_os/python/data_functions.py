@@ -285,8 +285,8 @@ def get_state_incentives(con):
     #changed from 2019 to 2020
     #state_incentives_csv = pd.read_csv("/Users/asekar/Box/SFS_2020/Data/state_incentives_2020_LI_full.csv", index_col=False)
     #sql = """SELECT * FROM diffusion_shared.state_incentives_2020;"""    
-    #sql = 'SELECT * FROM public."state_incentives_2020_LI_3000"'
-    sql = 'SELECT * FROM public."state_incentives_2020_LI_full"'    
+    sql = 'SELECT * FROM public."state_incentives_2020_LI_3000"'
+    #sql = 'SELECT * FROM public."state_incentives_2020_LI_full"'    
     state_incentives = pd.read_sql(sql, con)
     
     #from datetime import datetime   #code to conver the format if that erro persists  
@@ -294,6 +294,7 @@ def get_state_incentives(con):
     #    state_incentives.start_date.iloc[x]=datetime.date(datetime.strptime(state_incentives.start_date.iloc[x], '%Y-%m-%d'))
     #    state_incentives.start_date.iloc[x]=datetime.date(datetime.strptime(state_incentives.start_date.iloc[x], '%Y-%m-%d'))
     
+    state_incentives = state_incentives.fillna(value=np.nan)
     return state_incentives
 
      
