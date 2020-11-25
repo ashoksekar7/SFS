@@ -517,8 +517,8 @@ def apply_state_incentives(dataframe, state_incentives, year, start_year, state_
 
     #Adjust incenctives to account for reduced values as adoption increases
 
-    state_incentives1 = state_incentives.loc[state_incentives['bin_id'].isin([5,6,7,8,17,18,19,20])]
-    state_incentives2 = state_incentives.loc[state_incentives['bin_id'].isin([1,2,3,4,9,10,11,12,13,14,15,16])]
+    state_incentives1 = state_incentives.loc[state_incentives['bin_id'].isin([1,2,3,4])]
+    state_incentives2 = state_incentives.loc[state_incentives['bin_id'].isin([5,6,7,8,9,10,11,12])]
     
     
     yearly_escalation_function = lambda value, end_year: max(value - value * (1.0 / (end_year - start_year)) * (year-start_year), 0)
