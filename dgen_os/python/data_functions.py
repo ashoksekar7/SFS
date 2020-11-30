@@ -294,7 +294,7 @@ def get_state_incentives(con):
     #    state_incentives.start_date.iloc[x]=datetime.date(datetime.strptime(state_incentives.start_date.iloc[x], '%Y-%m-%d'))
     #    state_incentives.start_date.iloc[x]=datetime.date(datetime.strptime(state_incentives.start_date.iloc[x], '%Y-%m-%d'))
 
-    state_incentives = state_incentives.fillna(value=np.nan)
+    #state_incentives = state_incentives.fillna(value=np.nan)
     return state_incentives
 
 
