@@ -284,8 +284,8 @@ def get_bass_params(con, schema):
 def get_state_incentives(con):
     #changed from 2019 to 2020
     #state_incentives_csv = pd.read_csv("/Users/asekar/Box/SFS_2020/Data/state_incentives_2020_LI_full.csv", index_col=False)
-    sql = """SELECT * FROM diffusion_shared.state_incentives_2020;"""    
-    #sql = 'SELECT * FROM public."state_incentives_2020_LI_3000"'
+    #sql = """SELECT * FROM diffusion_shared.state_incentives_2020;"""    
+    sql = 'SELECT * FROM public."state_incentives_2020_LI_3000"'
     #sql = 'SELECT * FROM public."state_incentives_2020_LI_full"'
     state_incentives = pd.read_sql(sql, con)
 
