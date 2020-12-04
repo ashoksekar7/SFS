@@ -480,7 +480,7 @@ def get_nem_state(con, schema):
 
 def get_nem_state_by_sector(con, schema):
     #sql = "SELECT *, 'BAU'::text as scenario FROM diffusion_shared.nem_scenario_bau_2019;"
-    sql = 'SELECT * FROM public."nem_scenario_bau_2019_netbilling_SFS";'
+    sql = 'SELECT * FROM public."nem_scenario_bau_2019_netmetering_SFS";'
     df = pd.read_sql(sql, con, coerce_float=False)
     df["scenario"]="BAU"
 
@@ -497,7 +497,7 @@ def get_nem_state_by_sector(con, schema):
 
 def get_nem_utility_by_sector(con, schema):
     #sql = "SELECT *, 'BAU'::text as scenario FROM diffusion_shared.nem_scenario_bau_by_utility_2019;"
-    sql = 'SELECT * FROM public."nem_scenario_bau_by_utility_2019_netbilling_SFS";'
+    sql = 'SELECT * FROM public."nem_scenario_bau_by_utility_2019_netmetering_SFS";'
     df = pd.read_sql(sql, con, coerce_float=False)
     df["scenario"]="BAU"
     df.rename(columns={'max_pv_kw_limit':'nem_system_kw_limit'}, inplace=True)
