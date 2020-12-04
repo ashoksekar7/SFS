@@ -470,32 +470,38 @@ def get_scenario_options(cur, schema, pg_params):
 
 #%%
 def get_nem_state(con, schema):
-    sql = "SELECT *, 'BAU'::text as scenario FROM diffusion_shared.nem_state_limits_2019;"
+    #sql = "SELECT *, 'BAU'::text as scenario FROM diffusion_shared.nem_state_limits_2019;"
+    sql = 'SELECT * FROM public."nem_state_limits_2019_SFS";'
     df = pd.read_sql(sql, con, coerce_float=False)
-
+    df["scenario"]="BAU"
+    df=df.astype({"max_cum_capacity_mw":"float"})
+    df=df.astype({"max_pct_cum_capacity":"float"})
     return df
 
 def get_nem_state_by_sector(con, schema):
-    sql = "SELECT *, 'BAU'::text as scenario FROM diffusion_shared.nem_scenario_bau_2019;"
+    #sql = "SELECT *, 'BAU'::text as scenario FROM diffusion_shared.nem_scenario_bau_2019;"
+    sql = 'SELECT * FROM public."nem_scenario_bau_2019_netbilling_SFS";'
     df = pd.read_sql(sql, con, coerce_float=False)
+    df["scenario"]="BAU"
 
     # special handling of DC: we don't know system size until bill calculator and differing compensation styles will
     # potentially result in different optimal system sizes. Here we assume only res customers (assumed system_size_kw < 100)
     # are eligible for full retail net metering; com/ind (assumed system_size_kw >= 100) only eligible for net billing.
-    df = df[~((df['state_abbr'] == 'DC') & (df['sector_abbr'] == 'res') & (df['compensation_style'] == 'net billing'))]
-    df = df[~((df['state_abbr'] == 'DC') & (df['sector_abbr'] != 'res') & (df['compensation_style'] == 'net metering'))]
-    df['min_pv_kw_limit'] = np.where(((df['state_abbr'] == 'DC') & (df['sector_abbr'] != 'res')), 0., df['min_pv_kw_limit'])
+    #df = df[~((df['state_abbr'] == 'DC') & (df['sector_abbr'] == 'res') & (df['compensation_style'] == 'net billing'))]
+    #df = df[~((df['state_abbr'] == 'DC') & (df['sector_abbr'] != 'res') & (df['compensation_style'] == 'net metering'))]
+    #df['min_pv_kw_limit'] = np.where(((df['state_abbr'] == 'DC') & (df['sector_abbr'] != 'res')), 0., df['min_pv_kw_limit'])
 
     df.rename(columns={'max_pv_kw_limit':'nem_system_kw_limit'}, inplace=True)
 
     return df
 
 def get_nem_utility_by_sector(con, schema):
-    sql = "SELECT *, 'BAU'::text as scenario FROM diffusion_shared.nem_scenario_bau_by_utility_2019;"
+    #sql = "SELECT *, 'BAU'::text as scenario FROM diffusion_shared.nem_scenario_bau_by_utility_2019;"
+    sql = 'SELECT * FROM public."nem_scenario_bau_by_utility_2019_netbilling_SFS";'
     df = pd.read_sql(sql, con, coerce_float=False)
-
+    df["scenario"]="BAU"
     df.rename(columns={'max_pv_kw_limit':'nem_system_kw_limit'}, inplace=True)
-
+    df=df.astype({'eia_id':'object'})
     return df
 
 def get_selected_scenario(con, schema):
